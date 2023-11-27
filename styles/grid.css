@@ -3,6 +3,21 @@ body {
   background-color: #4A3A7A;
 }
 
+.menu {
+  background-color: #262626;
+  margin: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 15px;
+  border-radius: 5px;
+  color: white;
+}
+
+.menu input {
+  background-color: #404040;
+  color: white;
+}
+
 .card-container {
 	align-items: start;
 	display: grid;

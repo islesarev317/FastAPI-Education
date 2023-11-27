@@ -1,10 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
+ <!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8" />
+    <title>Cards</title>
+    <link rel="stylesheet" href="styles/grid.css">
 </head>
 <body>
 
+<div class="menu">
+<label>Filter:</label>
+<input id="filter"/>
+</div>
+
+<div class="card" style="display: none;" id="blank_card">
+    <h1>{header}</h1>
+    <p>{description}</p>
+</div>
+
+<section class="card-container" id="grid">
+</section>
+
+<script>
+
+    async function getCards(){
+        filter = document.getElementById("filter").value;
+        const response = await fetch("/cards_js/"+filter, {
+            method: "GET",
+            headers: {"Accept": "application/json"}
+        });
+        if (response.ok) {
+                    const data = await response.json();
+                    addCards(data);
+                }
+    }
+
+    function addCards(data){
+        grid = document.getElementById("grid");
+        grid.innerHTML = '';
+        for (var pair of data){
+            new_card = document.getElementById("blank_card").cloneNode(true);
+            new_card.id = "";
+            new_card.style = "";
+            new_card.querySelector("h1").textContent = pair[0];
+            new_card.querySelector("p").textContent = pair[1];
+            grid.appendChild(new_card);
+        }
+    }
+
+    document.getElementById("filter").addEventListener("change", getCards);
+    getCards();
+
+</script>
 </body>
-</html>
