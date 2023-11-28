@@ -14,6 +14,15 @@ with open("words.txt", "r") as file:
         word_set.append(word_and_definition)
 
 
+def add_word(pair):
+    word_set.append(pair)
+    with open("words.txt", "a") as file:
+        file.write(" - ".join(pair) + "\n")
+
+
+# -------------------------- Methods -------------------------- #
+
+
 @app.get("/")
 def read_root():
     html_content = get_html_grid(word_set)
@@ -24,6 +33,7 @@ def read_root():
 async def get_cards():
     return FileResponse("cards.html")
 
+
 @app.get("/cards_js/")
 async def get_cards():
     return JSONResponse(content=word_set)
@@ -33,4 +43,11 @@ async def get_cards():
 async def get_cards(filter):
     filtered_set = [pair for pair in word_set if pair[0].startswith(filter)]
     return JSONResponse(content=filtered_set)
+
+
+@app.post("/cards_js/{word}")
+def create_card(word):
+    pair = (word, "")
+    add_word(pair)
+    return pair
 

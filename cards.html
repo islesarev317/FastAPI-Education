@@ -8,8 +8,8 @@
 <body>
 
 <div class="menu">
-<label>Filter:</label>
-<input id="filter"/>
+    <label><b>Find</b> <span class="grey-span">(Enter)</span> or <b>Create</b> <span class="grey-span">(Enter + Ctrl)</span>:</label>
+    <input id="filter"/>
 </div>
 
 <div class="card" style="display: none;" id="blank_card">
@@ -22,6 +22,17 @@
 
 <script>
 
+    function addOneCard(pair, addClass){
+        new_card = document.getElementById("blank_card").cloneNode(true);
+        new_card.id = "";
+        new_card.style = "";
+        new_card.classList.add(addClass);
+        new_card.querySelector("h1").textContent = pair[0];
+        new_card.querySelector("p").textContent = pair[1];
+        grid.insertBefore(new_card, grid.firstChild);
+        //grid.appendChild(new_card);
+    }
+
     async function getCards(){
         filter = document.getElementById("filter").value;
         const response = await fetch("/cards_js/"+filter, {
@@ -30,24 +41,40 @@
         });
         if (response.ok) {
                     const data = await response.json();
-                    addCards(data);
+                    grid = document.getElementById("grid");
+                    grid.innerHTML = '';
+                    for (var pair of data){
+                        addOneCard(pair);
+                    }
                 }
     }
 
-    function addCards(data){
-        grid = document.getElementById("grid");
-        grid.innerHTML = '';
-        for (var pair of data){
-            new_card = document.getElementById("blank_card").cloneNode(true);
-            new_card.id = "";
-            new_card.style = "";
-            new_card.querySelector("h1").textContent = pair[0];
-            new_card.querySelector("p").textContent = pair[1];
-            grid.appendChild(new_card);
+    async function createCard(){
+        filter = document.getElementById("filter").value;
+        const response = await fetch("/cards_js/"+filter, {
+            method: "POST",
+            headers: {"Accept": "application/json"}
+        });
+        if (response.ok) {
+            const data = await response.json();
+            addOneCard(data, "new-card");
+            window.alert("Card created");
         }
     }
 
-    document.getElementById("filter").addEventListener("change", getCards);
+    document.getElementById("filter").addEventListener("input", getCards);
+    document.getElementById("filter").addEventListener('keydown', (event) => {
+        if(event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
+            createCard();
+        }
+    });
+    document.getElementById("filter").addEventListener('keyup', (event) => {
+        if(event.key === "Escape") {
+            document.getElementById("filter").value = "";
+            getCards();
+        }
+    });
+
     getCards();
 
 </script>

@@ -18,6 +18,10 @@ body {
   color: white;
 }
 
+.grey-span {
+    color: #808080;
+}
+
 .card-container {
 	align-items: start;
 	display: grid;
@@ -33,4 +37,8 @@ body {
 	padding: 24px 0 16px;
 	text-align: center;
 	text-shadow: 1px 1px 0 #555;
+}
+
+.card.new-card {
+    background-color: #368056;
 }
